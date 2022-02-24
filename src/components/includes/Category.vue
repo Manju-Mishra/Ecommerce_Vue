@@ -100,7 +100,7 @@ components:{
         products:"",
         pid: this.$route.params.id,
         server:"http://127.0.0.1:8000/uploads/",
-           email:localStorage.getItem("uid")?localStorage.getItem("uid"):'',
+        email:localStorage.getItem("uid")?localStorage.getItem("uid"):'',
            
         
        
@@ -210,7 +210,16 @@ methods:{
 
 
 
-
+ watch:{
+   $route(to){
+     this.pid= to.params.id;
+       productByid(this.pid).then((res)=>
+    {
+      this.products=res.data;
+      console.log(res.data);
+    })
+   }
+ },
  created()
  {
    this.params=this.$route.params.id;

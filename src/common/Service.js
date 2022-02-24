@@ -62,5 +62,10 @@ export function MyWishlist(data)
 {
     return axios.post(`${MAIN_URL}wishlist`,data)
 }
+
+export function Trackorder(data)
+{
+    return axios.get(`${MAIN_URL}search/`+data)
+}
 export default {userLogin,userRegister,usercontact,category,productDetails,changePassword,
-    changeProfile,CMSByid,ApplyCoupon,UserDetails,UserOrderDetails,MyWishlist};
+    changeProfile,CMSByid,ApplyCoupon,UserDetails,UserOrderDetails,MyWishlist,Trackorder};

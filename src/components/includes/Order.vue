@@ -4,9 +4,9 @@
       <section>
       <div class="container">
         <div class="row">
-           <h2 class="title text-center">View / Track Order</h2>
+           <h2 class="title text-center">My Orders</h2>
            <div class="col-sm-10 padding-right">
-            <h3>View / Track Orders</h3>
+            <h3> View / <router-link to="/trackorder">Track Orders</router-link></h3>
             <div>
                 <table class="table table-condensed" border="1">
                     <thead>
@@ -17,6 +17,7 @@
                             <td>Quantity</td>
                             <td>Price</td>
                             <td>Total</td>
+                            <td>Action</td>
                             
                         </tr>
                     </thead>
@@ -28,7 +29,10 @@
                             <td>{{ order.quantity }}</td>
                             <td>{{ order.price }}</td>
                             <td>{{ order.quantity*order.price }}</td>
-                            
+                            <td>
+                              <router-link to="/trackorder"><i class="fa fa-map-marker"></i> Track</router-link>
+                            </td>
+                             
                         </tr>
                     </tbody>
                 </table>

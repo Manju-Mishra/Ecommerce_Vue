@@ -258,8 +258,8 @@
                     <a href="">{{ i.name }}</a>
                   </h4>
                 </td>
-                <td class="cart_price">
-                  <p>₹{{ i.price }}</p>
+                <td class="cart_price"><br>
+                  <p>₹{{ i.price}}</p>
                 </td>
                 <td class="cart_quantity">
                   <div class="cart_quantity_button">
@@ -278,7 +278,7 @@
                   </div>
                 </td>
                 <td class="cart_total">
-                  <p class="cart_total_price">₹{{ i.price * i.quantity }}</p>
+                  <p class="cart_total_price">₹{{ (i.price * i.quantity) }}</p>
                 </td>
                 <td class="cart_delete">
                   <a class="cart_quantity_delete" href=""
@@ -291,12 +291,14 @@
         </div>
 
         <div class="step-one">
-          <h2 class="heading">Step 3 : Payment</h2>
+          <h2 class="heading">Step 3 : Payment Method</h2>
         </div>
         <div class="row mt-4" style="margin-left: 3px; margin-top: 3px">
           <div>
-          <label><input type="radio"  v-model="payment_mode" value="COD"/> Cash on delivery </label>&nbsp;  
-         <label><input type="radio"  v-model="payment_mode" value="Paypal" /> Paypal </label>&nbsp;  
+          <label><input type="radio" id="btn1" v-model="payment_mode" value="COD"/>&ensp;Cash on delivery </label>&nbsp; 
+         <label><input type="radio" id="btn" v-model="payment_mode" value="Paypal" /> <label>
+           Paypal </label></label>
+          
 
           </div>
         </div>
@@ -331,7 +333,7 @@
               <table class="table table-condensed total-result">
                 <tr style="font-weight: bold">
                   <td>Cart Sub Total&emsp;</td>
-                  <td>₹{{ subtotal }}</td>
+                  <td>₹{{subtotal}}</td>
                 </tr>
                 <tr class="shipping-cost" style="font-weight: bold">
                   <td>Shipping Cost &emsp;</td>
@@ -344,10 +346,13 @@
                 <tr style="font-weight: bold">
                   <td>Total &emsp;</td>
                   <td>
-                    <span>₹{{ total }}</span>
+                    <span>₹{{ total}}</span>
                   </td>
                 </tr>
                 <br />
+                <tr>
+                  <td id="pay"><Paypal/></td>
+                </tr>
                 <tr>
                   <td>
                    <input type="submit" value="Order Place" @click="ordernow()" class="btn btn-primary">
@@ -357,6 +362,7 @@
             </td>
           </tr>
         </table>
+        
       </div>
     </section>
     <!--/#cart_items-->
@@ -364,9 +370,10 @@
     <Footer />
   </div>
 </template>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 import Nav from "../includes/Nav.vue";
+import Paypal from "../includes/Paypal.vue";
 import Footer from "../includes/Footer.vue";
 import { ApplyCoupon } from "@/common/Service";
 import { required, email, minLength } from "vuelidate/lib/validators";
@@ -377,6 +384,7 @@ export default {
   components: {
     Nav,
     Footer,
+    Paypal,
   },
   data() {
     return {
@@ -400,7 +408,9 @@ export default {
       },
       submitted: false,
       useremail:localStorage.getItem('uid'),
-      discount:"0"
+      discount:0,
+      usedcoupon:"",
+      orderstatus:"",
     };
   },
   validations: {
@@ -437,6 +447,8 @@ export default {
           total: item.price*item.quantity,
           productname: item.name,
           payment_mode:this.payment_mode,
+          usedcoupon:this.usedcoupon,
+          status:this.orderstatus,
         };
       console.log(obj);
         UserOrderDetails(obj).then((res) => {
@@ -446,9 +458,9 @@ export default {
              localStorage.removeItem('discount')
              this.check=JSON.parse(localStorage.getItem("myCheckout")); 
              let arr = JSON.stringify(this.check);
-             localStorage.setItem("orders",arr);
+             localStorage.setItem("orders",arr)
              localStorage.removeItem("myCart")
-             this.$router.push('/order');
+             this.$router.push('/cart');
           
           }
           
@@ -505,10 +517,14 @@ export default {
           if (res) {
              localStorage.setItem("discount",res.data.coupon_value);
              this.discount=localStorage.getItem('discount')
+            localStorage.setItem('usedcoupon',res.data.coupon_code);
+            this.usedcoupon=localStorage.getItem("usedcoupon");
+            this.orderstatus=localStorage.getItem('status');
+            localStorage.setItem('totalprice',this.total);
             this.$swal(res.data.msg, "", "success");
           } 
           else {
-            this.$swal(res.data.msg, "",);
+            this.$swal(res.data.msg, "","error");
           }
         })
         .catch((err) => {
@@ -517,6 +533,7 @@ export default {
     },
   },
   computed: {
+    
     subtotal() {
       var subcost = 0;
       for (let i in this.item) {
@@ -536,15 +553,38 @@ export default {
        return charge;
     },
     total() {
-      var totalprice = 0;
-      var totalcost = this.subtotal;
-      var charge=this.delivery;
-      return totalcost + totalprice+charge-this.discount;
+       let totalprice = 0;
+      let totalcost = this.subtotal;
+      let charge=this.delivery;
+      let amount=0;
+      if(this.delivery!="Free"){
+         amount= totalcost + totalprice + charge- this.discount;
+        return amount;
+      }
+      else
+      {
+      // return totalcost + totalprice - this.discount;
+       amount= totalcost + totalprice - this.discount;
+       return amount;
+
+      }
+     
     },
   },
   mounted() {
     this.item = JSON.parse(localStorage.getItem("myCheckout"));
     console.log(this.item)
+
+     $(document).ready(function(){
+       $("#pay").hide();
+     },
+     $('#btn').click(function(){
+       $("#pay").show();
+     }),
+      $('#btn1').click(function(){
+       $("#pay").hide();
+     })
+     );
   },
 };
 </script>

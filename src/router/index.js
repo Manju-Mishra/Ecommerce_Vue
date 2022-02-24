@@ -17,6 +17,8 @@ import Productdetails from '../components/includes/Productdetails';
 import Product from '../components/includes/Product'
 import Explore from '../components/includes/Explore'
 import Order from '../components/includes/Order'; 
+import Trackorder from '../components/includes/Trackorder';
+import Paypal from "../components/includes/Paypal";
 function myGaurd(to,from,next){
     let isAutheticated=false;
     if(localStorage.getItem('uid')!=undefined)
@@ -31,7 +33,7 @@ function myGaurd(to,from,next){
     }
     else {
         alert("Login First !!");
-        next("/");
+        next("/login");
     }
 }
 export default new Router ({
@@ -109,6 +111,16 @@ export default new Router ({
             path:'/order',
             name:'Order',
             component:Order
+        },
+        {
+            path:'/trackorder',
+            name:'Trackorder',
+            component:Trackorder
+        },
+        {
+            path:'/paypal',
+            name:'Paypal',
+            component:Paypal
         },
     ]
 

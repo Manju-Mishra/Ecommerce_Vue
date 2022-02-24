@@ -26,13 +26,12 @@
                   alt=""
                 />
                 <h2>{{items.productname}}</h2>
-                <!-- <p>Web ID: 1089772</p> -->
                 <img src="/images/product-details/rating.png" alt="" />
                 <span>
                   <span>{{items.price}}</span>
                   <label>Quantity:</label>
                   <input type="text" v-model="items.quantity" />
-                  <button type="button" class="btn btn-fefault cart" @click="addToCart(item.id)">
+                  <button type="button" class="btn btn-fefault cart" @click="addToCart(items)">
                     <i class="fa fa-shopping-cart"></i>
                     Add to cart
                   </button>
@@ -69,8 +68,10 @@ export default {
   },
   data(){
       return{
-          pid: this.$route.params.id,
+          
           item:"",
+        products:"",
+        pid: this.$route.params.id,
       };
     
   },
@@ -84,37 +85,47 @@ export default {
   },
 
   methods:{
-  addToCart(id){
-           var c=0
-          if(localStorage.getItem('myCart')!=undefined){
-               let arr=JSON.parse(localStorage.getItem('myCart'))
-               for(let i=0;i<arr.length;i++)
-               {
-                 if(id==arr[i]['pid'])
-                 {
-                   arr[i]['quantity']++;
-                   c=1;
-                 }
-               }
-               if(c==0)
-               {  
-                 let obj={pid:id,quantity:1}
-                arr.push(obj);
-               }
-               localStorage.setItem('myCart',JSON.stringify(arr));
-               this.$store.dispatch('addToCart',arr)
-               this.$swal('Added to cart','','success');
-          }
-          else {
-              let arr=[]
-              let obj={pid:id,quantity:1}
-              arr.push(obj);
-              localStorage.setItem('myCart',JSON.stringify(arr));
-              this.$store.dispatch('addToCart',arr)
-              this.$swal('Added to cart','','success');
-          }
+   addToCart(product) {
+      if (localStorage.getItem("myCart") != undefined) {
+        let arr = JSON.parse(localStorage.getItem("myCart"));
+        let obj = {
+          pid: product.id,
+          quantity: 1,
+          price: product.price,
+          name: product.productname,
+          image: product.image,
+        };
+       
+        const found = arr.some((item) => item.pid == product.id);
+        if (found) {
+          this.$swal("Already  added", "", "error");
+        } else
+         {
+          arr.push(obj);
+          localStorage.setItem("myCart", JSON.stringify(arr));
+          this.$store.dispatch("addToCart", arr);
+          this.$swal("Added successfully", "", "success");
+          //location.reload();
+        }
+      } else
+       {
+        let arr = [];
+        let obj = {
+         pid: product.id,
+          quantity: 1,
+          price: product.price,
+          name: product.productname,
+          image: product.image,
+        };
+        arr.push(obj);
+        localStorage.setItem("myCart", JSON.stringify(arr));
+        this.$store.dispatch("addToCart", arr);
+        this.$swal("Added successfully", "", "success");
+        //location.reload();
+        // this.$router.push("/cart");
+      }
+    },
 
-   }
   },
  
 };

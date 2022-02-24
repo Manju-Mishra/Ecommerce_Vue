@@ -25,7 +25,7 @@
               <tr v-for="i in item" :key="i.id">
                 <td class="cart_product">
                   <img
-                      :src="'http://127.0.0.1:8000/uploads/' + i.image"
+                      :src="server + i.image"
                       alt=""
                       height="50"
                       width="50"
@@ -33,18 +33,17 @@
                 </td>
                 <td class="cart_description">
                   <h4><a href="">{{ i.name }}</a></h4>
-                  <p>Web ID: 1089772</p>
                 </td>
-                <td class="cart_price">
-                  <p>₹ {{ i.price }}</p>
+                <td class="cart_price"><br>
+                  <p>₹{{ i.price }}</p>
                 </td>
                 <td class="cart_quantity">
-                  <div class="cart_quantity_button">
+                  <div class="cart_quantity_button"><br>
                     <a class="cart_quantity_up" href=""> {{ i.quantity }} </a>
                   </div>
                 </td>
-                <td class="cart_total">
-                  <p class="cart_total_price">₹ {{ i.price * i.quantity }}</p>
+                <td class="cart_total"><br>
+                  <p class="cart_total_price">₹{{ (i.price * i.quantity) }}</p>
                 </td>
                 <td>
                     <button class="btn btn-default update" @click="moveToCart(i)">Move to cart</button>
@@ -77,6 +76,7 @@ components:{
 data() {
     return {
       item: undefined,
+      server:"http://127.0.0.1:8000/uploads/"
     };
   },
   methods: {
@@ -90,17 +90,17 @@ data() {
       if (localStorage.getItem("myCart") != undefined) {
         let arr = JSON.parse(localStorage.getItem("myCart"));
         let obj = {
-          pid: i.id,
+          pid: i.pid,
           quantity: 1,
           price: i.price,
-          name: i.productname,
+          name: i.name,
           image: i.image,
         };
          
        
-        const found = arr.some((item) => item.pid == i.id);
+        const found = arr.some((item) => item.pid == i.pid);
         if (found) {
-          this.$swal("Already  added", "", "error");
+          this.$swal("Already added to Cart", "", "error");
         } else
          {
           arr.push(obj);
@@ -114,16 +114,17 @@ data() {
        {
         let arr = [];
         let obj = {
-         pid: i.id,
+         pid: i.pid,
           quantity: 1,
           price: i.price,
-          name: i.productname,
+          name: i.name,
           image: i.image,
         };
         arr.push(obj);
         localStorage.setItem("myCart", JSON.stringify(arr));
         this.$store.dispatch("addToCart", arr);
         this.$swal("Moved to cart", "", "success");
+        
         //location.reload();
         // this.$router.push("/cart");
       }

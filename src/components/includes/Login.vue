@@ -262,12 +262,13 @@ export default {
              if(res){
                 
                 // alert(" Registered Successfully")
-                this.$swal("User added successfully !!","","success")
+                this.$swal(res.data.message,"","success")
+                console.log(res.data);
       
             }
             else
             {
-              this.$swal("User not registered","","success")
+              this.$swal(res.data.message,"","error")
             }
         })
         .catch(err=>{

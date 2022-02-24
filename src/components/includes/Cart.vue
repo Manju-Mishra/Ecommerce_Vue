@@ -30,7 +30,7 @@
                   <h4><a href="">{{ i.name }}</a></h4>
                  
                 </td>
-                <td class="cart_price">
+                <td class="cart_price"><br>
                   <p>₹{{i.price}}</p>
                 </td>
                 <td class="cart_quantity">
@@ -48,7 +48,7 @@
                   </div>
                 </td>
                 <td class="cart_total">
-                  <p class="cart_total_price">₹{{i.price*i.quantity}}</p>
+                  <p class="cart_total_price">₹{{(i.price*i.quantity)}}</p>
                 </td>
                 <td class="cart_delete">
                   <a class="cart_quantity_delete" href="" @click="deleted(i)"
@@ -76,6 +76,7 @@
             <div class="total_area" >
               <ul>
                 <li>Total <span>₹{{subtotal}}</span></li>
+               
               </ul>
             <router-link to="/checkout"> <button class="btn btn-default check_out" @click="checkout()" >CheckOut </button></router-link>
             </div>
@@ -95,11 +96,13 @@ export default {
   components: {
     Nav,
     Footer,
+    
   },
   data() {
     return {
       item:"",
       check:"",
+      
     };
   },
   computed:{

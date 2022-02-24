@@ -159,7 +159,7 @@ methods:{
         console.log(obj)
         const found = arr.some((item) => item.pid == product.id);
         if (found) {
-          this.$swal("Already  added", "", "error");
+          this.$swal("Already added", "", "error");
         } else
          {
           arr.push(obj);
